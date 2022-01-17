@@ -1,32 +1,31 @@
 pipeline {
-    agent any
+  agent any
 
-    stages {
-        stage('build') {
-            steps {
-                echo 'building application...'
-            }
+  stages {
+    stage('build') {
+      when {
+        expression {
+          BRANCH_NAME == 'jenkins-jobs'
         }
-		stage('test') {
-            steps {
-                echo 'testing application...'
-            }
+      }
+      steps {
+        echo 'building application...'
+      }
+    }
+    stage('test') {
+      when {
+        expression {
+          BRANCH_NAME == 'dev'
         }
-		stage('deploy') {
-            steps {
-                echo 'deploying application...'
-            }
-        }
+      }
+      steps {
+        echo 'testing application...'
+      }
     }
-    post {
-    always{
-      echo "always do after all stages"
-    }
-    success{
-      echo "success do after all stages"
-    }
-    failure{
-      echo "failure do after all stages"
+    stage('deploy') {
+      steps {
+        echo 'deploying application...'
+      }
     }
   }
 }
