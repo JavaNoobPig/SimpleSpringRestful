@@ -1,11 +1,13 @@
 pipeline {
   agent any
-
+  environment{
+     NEW_VERSION = '1.3.0'
+  }
   stages {
     stage('build') {
       when {
         expression {
-          env.BRANCH_NAME == 'jenkins-jobs'
+          NEW_VERSION == '1.3.0'
         }
       }
       steps {
@@ -15,7 +17,7 @@ pipeline {
     stage('test') {
       when {
         expression {
-          env.BRANCH_NAME == 'dev'
+          NEW_VERSION == '1.3.3'
         }
       }
       steps {
@@ -24,7 +26,7 @@ pipeline {
     }
     stage('deploy') {
       steps {
-        echo "${env.BRANCH_NAME}"
+        echo "${NEW_VERSION}"
         echo 'deploying application...'
       }
     }
