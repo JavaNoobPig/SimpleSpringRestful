@@ -38,8 +38,8 @@ pipeline {
         script {
           env.ENV = input message: "Select the evnvironment in groovy block to deploy", 
                                   ok: "Done",
-                                  parametes: [choices: name: 'PickUpENV',['DEV','STAGING','PROD'],
-                                  description: 'Just ENV']
+                                  parametes: [choices: (name: 'PickUpENV',['DEV','STAGING','PROD'],
+                                  description: 'Just ENV'])
             gv.deployApp()
           echo "deploying to ${ENV}"
         }
