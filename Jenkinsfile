@@ -36,7 +36,7 @@ pipeline {
     stage('deploy') {
       steps {
         script {
-          env.ENV = input message "Select the evnvironment in groovy block to deploy", 
+          env.ENV = input message: "Select the evnvironment in groovy block to deploy", 
                                   ok: "Done",
                                   parametes: [choices: ['DEV','STAGING','PROD'],
                                   description: 'Just ENV']
