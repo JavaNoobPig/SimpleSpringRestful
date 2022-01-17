@@ -34,19 +34,14 @@ pipeline {
       }
     }
     stage('deploy') {
-      input {
-         message "Select the evnvironment to deploy"
-         ok "DONE!"
-        parameters {
-          choice(name: 'ONE', choices: ['DEV','STAGING','PROD'], description: 'Just ENV')
-          choice(name: 'TWO', choices: ['DEV','STAGING','PROD'], description: 'Just ENV')
-        }
-      }
       steps {
         script {
+          env.ENV = input message "Select the evnvironment in groovy block to deploy", 
+                                  ok: "Done",
+                                  parametes: [choices: ['DEV','STAGING','PROD'],
+                                  description: 'Just ENV']
             gv.deployApp()
-          echo "deploying to ${ONE}"
-          echo "deploying to ${TWO}"
+          echo "deploying to ${ENV}"
         }
       }
     }
