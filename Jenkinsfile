@@ -15,7 +15,7 @@ pipeline {
     stage('test') {
       when {
         expression {
-          ${env.BRANCH_NAME}E == 'dev'
+          ${env.BRANCH_NAME} == 'dev'
         }
       }
       steps {
