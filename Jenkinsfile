@@ -1,4 +1,3 @@
-def branchName = getCurrentBranch()
 pipeline {
   agent any
 
@@ -6,7 +5,7 @@ pipeline {
     stage('build') {
       when {
         expression {
-          branchName == 'jenkins-jobs'
+          env.BRANCH_NAME == 'jenkins-jobs'
         }
       }
       steps {
@@ -16,7 +15,7 @@ pipeline {
     stage('test') {
       when {
         expression {
-          branchName == 'dev'
+          env.BRANCH_NAME == 'dev'
         }
       }
       steps {
@@ -25,16 +24,9 @@ pipeline {
     }
     stage('deploy') {
       steps {
-        echo "${branchName}"
+        echo "${env.BRANCH_NAME}"
         echo 'deploying application...'
       }
     }
   }
-}
-
-def getCurrentBranch () {
-    return sh (
-        script: 'git rev-parse --abbrev-ref HEAD',
-        returnStdout: true
-    ).trim()
 }
