@@ -5,7 +5,7 @@ pipeline {
     stage('build') {
       when {
         expression {
-          ${env.BRANCH_NAME} == 'jenkins-jobs'
+          env.BRANCH_NAME == 'jenkins-jobs'
         }
       }
       steps {
@@ -15,7 +15,7 @@ pipeline {
     stage('test') {
       when {
         expression {
-          ${env.BRANCH_NAME} == 'dev'
+          env.BRANCH_NAME == 'dev'
         }
       }
       steps {
