@@ -18,4 +18,15 @@ pipeline {
             }
         }
     }
+    post {
+    always{
+      echo "always do after all stages"
+    }
+    success{
+      echo "success do after all stages"
+    }
+    failure{
+      echo "failure do after all stages"
+    }
+  }
 }
