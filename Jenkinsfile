@@ -17,7 +17,6 @@ pipeline {
         script {
           gv.buildJar()
         }
-
       }
     }
     stage('build image') {
@@ -25,17 +24,15 @@ pipeline {
         script {
           gv.buildAndPushImage()
         }
+      }
+    }
+    stage('deploy') {
+      steps {
+        script {
+          gv.deployApp()
+        }
 
       }
     }
   }
-  stage('deploy') {
-    steps {
-      script {
-        gv.deployApp()
-      }
-
-    }
-  }
-}
 }
