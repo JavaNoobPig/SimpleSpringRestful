@@ -25,7 +25,7 @@ pipeline {
     stage('build image') {
       steps {
         script {
-          buildAndPushImage()
+          buildAndPushImage 'javapig/demo-app:jma-2.0'
         }
       }
     }
