@@ -23,6 +23,7 @@ pipeline {
     stage('build jar') {
       steps {
         script {
+          echo "Check Trigger!"
           buildJar()
         }
       }
