@@ -26,6 +26,8 @@ pipeline {
       steps {
         script {
           buildAndPushImage 'javapig/demo-app:jma-2.0'
+          dockerLogin()
+          dockerPush 'javapig/demo-app:jma-2.0'
         }
       }
     }
