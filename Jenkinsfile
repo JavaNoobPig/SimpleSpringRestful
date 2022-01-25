@@ -13,7 +13,7 @@ pipeline {
             sh 'mvn build-helper:parse-version versions:set \
                 -DnewVersion=\\\${parsedVersion.majorVersion}.\\\${parsedVersion.minorVersion}.\\\${parsedVersion.nextIncrementalVersion} \
                 versions:commit'
-            def version readMavenPom().getVersion()
+            def version = readMavenPom().getVersion()
             env.IMAGE_NAME = "$version-$BUILD_NUMBER"
         }
       }
