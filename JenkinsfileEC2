@@ -21,7 +21,7 @@ pipeline {
           echo 'EC2 Server have already done docker login, so do not need to login again!'
           def dockerCmd = 'docker run -d -p 8083:8080 javapig/demo-app:jma-2.0'
           sshagent(['ec2-server-key']) {
-               sh "ssh -o StrickHostKeyChecking=no ec2-user@18.181.180.178 ${dockerCmd}"
+               sh "ssh -o StrictHostKeyChecking=no ec2-user@18.181.180.178 ${dockerCmd}"
           }
           echo 'deploying application...'
         }
