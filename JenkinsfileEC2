@@ -6,7 +6,6 @@ library identifier: 'jenkins-shared-library@main', retriever: modernSCM(
                     credentialsId: 'GitRepoCredentials'
                     ]
 )
-def gv
 pipeline {
   agent any
   tools {
@@ -16,13 +15,6 @@ pipeline {
     IMAGE_NAME = 'javapig/demo-app:ec2-test'
   }
   stages {
-    stage('init') {
-      steps {
-        script {
-          gv = load "script.groovy"
-        }
-      }
-    }
     stage('build Jar') {
       steps {
         script {
