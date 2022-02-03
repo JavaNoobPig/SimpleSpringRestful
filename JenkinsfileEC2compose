@@ -1,0 +1,52 @@
+#!/usr/bin/env groovy
+
+library identifier: 'jenkins-shared-library@main', retriever: modernSCM(
+                   [$class: 'GitSCMSource',
+                    remote: 'https://github.com/JavaNoobPig/jenkins-shared-library.git',
+                    credentialsId: 'GitRepoCredentials'
+                    ]
+)
+pipeline {
+  agent any
+  tools {
+    maven 'maven-3.8.4'
+  }
+  environment {
+    IMAGE_NAME = 'javapig/demo-app:ec2-test'
+  }
+  stages {
+    stage('build Jar') {
+      steps {
+        script {
+          echo 'building Jar...'
+          buildJar()
+        }
+      }
+    }
+    stage('build Image') {
+      steps {
+        script {
+          echo 'building docker image...'
+          buildImage(env.IMAGE_NAME)
+          dockerLogin()
+          dockerPush(env.IMAGE_NAME)
+        }
+      }
+    }
+    stage('deploy') {
+      steps {
+        script {
+          echo 'EC2 Server have already done docker login, so do not need to login again!'
+
+          def shellCmd = "bash ./server-cmds.sh ${IMAGE_NAME}"
+          sshagent(['ec2-server-key']) {
+               sh "scp server-cmds.sh ec2-user@18.181.189.188:/home/ec2-user"
+               sh "scp docker-compose.yaml ec2-user@18.181.189.188:/home/ec2-user"
+               sh "ssh -o StrictHostKeyChecking=no ec2-user@18.181.189.188 ${shellCmd}"
+          }
+          echo 'deploying application...'
+        }
+      }
+    }
+  }
+}
