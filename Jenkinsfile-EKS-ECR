@@ -6,7 +6,8 @@ pipeline {
     maven 'maven'
   }
   environment {
-     DOCKER_REPO = '764625852240.dkr.ecr.ap-northeast-1.amazonaws.com/hello-pig'
+    DOCKER_REPO_SERVER= '764625852240.dkr.ecr.ap-northeast-1.amazonaws.com'
+     DOCKER_REPO = "$DOCKER_REPO_SERVER/hello-pig"
   }
   stages {
     stage('increment version') {
