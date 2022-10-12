@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.pig</groupId>
 	<artifactId>SimpleSpringRestful</artifactId>
-	<version>0.1.3</version>
+	<version>0.1.4</version>
 	<name>SimpleSpringRestful</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
