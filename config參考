@@ -1,0 +1,29 @@
+apiVersion: v1
+clusters:
+- cluster:
+    server: {參考EKS的Endpoint的URL}
+    certificate-authority-data: {參考本機config檔}
+  name: kubernetes
+contexts:
+- context:
+    cluster: kubernetes
+    user: {IAM的AWS Web登入帳號}@wonderful-badger-1234567890{我這邊有亂改,記得參考本機的}.ap-northeast-1.eksctl.io
+  name: kubernetes
+current-context: kubernetes
+kind: Config
+preferences: {}
+users:
+- name: {IAM的AWS Web登入帳號}@wonderful-badger-1234567890{我這邊有亂改,記得參考本機的}.ap-northeast-1.eksctl.io
+  user:
+    exec:
+      apiVersion: client.authentication.k8s.io/v1alpha1
+      command: aws-iam-authenticator
+      args:
+        - "token"
+        - "-i"
+        - "wonderful-badger-1234567890{我這邊有亂改,記得參考本機的}"
+        # - "- --role-arn"
+        # - "arn:aws:iam::{IAM的AWS Web登入帳號}:role/my-role"
+      # env:
+        # - name: "AWS_PROFILE"
+        #   value: "aws-profile"
