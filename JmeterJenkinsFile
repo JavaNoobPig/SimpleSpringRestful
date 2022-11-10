@@ -31,4 +31,9 @@ pipeline {
             }      
      }
    }
+    post {
+        always {
+            archiveArtifacts artifacts: '/tmp/result.csv', onlyIfSuccessful: true
+        }
+    }
 }
