@@ -6,6 +6,14 @@ pipeline {
         kind: Pod
         spec:
           containers:
+          - name: maven
+            image: docker.io/javapig/demo-app:maven-agent
+            command:
+            - cat
+            tty: true
+            securityContext:
+              runAsUser: 0
+            magePullPolicy: Always
           - name: python-podman
             image: docker.io/javapig/demo-app:non-root-jenkins-agent-python-gettext
             command:
@@ -20,6 +28,13 @@ pipeline {
     }
   }
    stages {
+     stage('Maven build') {
+            steps {
+              container('maven') {
+                sh "mvn clean package"
+              }
+            }      
+     }
     stage('Run build image') {
             steps {
               withCredentials([usernamePassword(credentialsId: 'dockerhub-acc', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
