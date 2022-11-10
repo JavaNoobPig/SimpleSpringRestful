@@ -22,11 +22,15 @@ pipeline {
    stages {
     stage('Run build image') {
             steps {
+              withCredentials([usernamePassword(credentialsId: 'dockerhub-acc', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
               container('python-podman') {
                 sh "ls"
                 sh "echo Dockerfile-OCP"
-                sh "sleep 100"
                 sh "podman version"
+                sh "podman build -t docker.io/javapig/demo-app:podman-app ."
+                sh "echo $PASS | podman login -u $USER --password-stdin "
+                sh "podman push docker.io/javapig/demo-app:podman-app"
+              }
               }
             }      
      }
