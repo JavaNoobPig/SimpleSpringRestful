@@ -17,14 +17,6 @@ pipeline {
     }
   }
   stages {
-    stage('local check') {
-      agent { label 'local' }
-      steps {
-          script {
-          sh 'ls -l'
-          }
-      }
-    }
     stage('Run maven') {
       steps {
         container('maven') {
