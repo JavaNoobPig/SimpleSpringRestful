@@ -28,6 +28,7 @@ pipeline {
     stage('Run maven') {
       steps {
         container('maven') {
+          sh 'ls -l'
           sh 'mvn -version'
           sh 'which oc'
           sh '''
