@@ -29,21 +29,5 @@ pipeline {
         }
       }
     }
-    stage('Run oc') {
-      agent { label 'local' }
-      steps {
-          script {
-          echo 'Hello World...'
-          sh "echo 'Hello World' > test.txt"
-          withCredentials([string(credentialsId: 'sa-token', variable: 'SECRET')]) {
-          echo "My secret text is '${SECRET}'"
-          sh '''
-          oc login --token=${SECRET}  --server=https://api.cluster-65wbs.65wbs.sandbox2884.opentlc.com:6443 --insecure-skip-tls-verify=true
-          oc whoami
-          '''
-          }
-          }
-      }
-    }
   }
 }
