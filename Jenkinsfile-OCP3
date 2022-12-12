@@ -17,11 +17,11 @@ pipeline {
     }
   }
   stages {
-    stage('Run oc') {
+    stage('local check') {
       agent { label 'local' }
       steps {
           script {
-          echo 'Hello World...'
+          sh 'ls -l'
           }
       }
     }
@@ -37,7 +37,7 @@ pipeline {
         }
       }
     }
-     stage('Run oc') {
+    stage('Run oc') {
       agent { label 'local' }
       steps {
           script {
