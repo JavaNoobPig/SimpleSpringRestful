@@ -34,7 +34,7 @@ pipeline {
           withCredentials([string(credentialsId: 'sa-token', variable: 'SECRET')]) {
           echo "My secret text is '${SECRET}'"
           sh '''
-          oc login --token=${SECRET}  --server=https://api.cluster-65wbs.65wbs.sandbox2884.opentlc.com:6443 --insecure-skip-tls-verify=true
+          oc login --token=${SECRET}  --server=https://api.cluster-2fdx7.2fdx7.sandbox719.opentlc.com:6443 --insecure-skip-tls-verify=true
           oc whoami
           '''
           }          
@@ -51,7 +51,7 @@ pipeline {
           withCredentials([string(credentialsId: 'sa-token', variable: 'SECRET')]) {
           echo "My secret text is '${SECRET}'"
           sh '''
-          oc login --token=${SECRET}  --server=https://api.cluster-65wbs.65wbs.sandbox2884.opentlc.com:6443 --insecure-skip-tls-verify=true
+          oc login --token=${SECRET}  --server=https://api.cluster-2fdx7.2fdx7.sandbox719.opentlc.com:6443 --insecure-skip-tls-verify=true
           oc whoami
           '''
           }
