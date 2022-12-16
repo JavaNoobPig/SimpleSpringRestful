@@ -52,10 +52,12 @@ pipeline {
       agent { label 'local' }
       steps {
           script {
-          withCredentials([file(credentialsId: "sa-token",variable: "SA-TOKEN")]) {
-          echo "My secret text is '${SA-TOKEN}'"
+          echo 'Hello World...'
+          sh "echo 'Hello World' > test.txt"
+          withCredentials([string(credentialsId: 'sa-token', variable: 'SECRET')]) {
+          echo "My secret text is '${SECRET}'"
           sh '''
-          oc login --token=${SA-TOKEN}  --server=https://api.cluster-2fdx7.2fdx7.sandbox719.opentlc.com:6443 --insecure-skip-tls-verify=true
+          oc login --token=${SECRET}  --server=https://api.cluster-2fdx7.2fdx7.sandbox719.opentlc.com:6443 --insecure-skip-tls-verify=true
           oc whoami
           '''
           }
