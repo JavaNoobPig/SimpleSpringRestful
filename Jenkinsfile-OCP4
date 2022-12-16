@@ -28,24 +28,34 @@ pipeline {
     stage('Run maven') {
       steps {
         container('maven') {
-        withCredentials([
-                file(
-                  credentialsId: "sa-token",
-                  variable: "SA-TOKEN"
-                ),
-                usernamePassword(
-                  credentialsId: "github",
-                  usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS'
-                )
-              ])
           sh 'ls -l'
           sh 'mvn -version'
           sh 'which oc'
+          withCredentials([string(credentialsId: 'sa-token', variable: 'SECRET')]) {
+          echo "My secret text is '${SECRET}'"
           sh '''
-          oc login --token=${SA-TOKEN}  --server=https://api.cluster-2fdx7.2fdx7.sandbox719.opentlc.com:6443 --insecure-skip-tls-verify=true
+          oc login --token=${SECRET}  --server=https://api.cluster-65wbs.65wbs.sandbox2884.opentlc.com:6443 --insecure-skip-tls-verify=true
           oc whoami
           '''
+          }          
+
         }
+      }
+    }
+    stage('Run oc') {
+      agent { label 'local' }
+      steps {
+          script {
+          echo 'Hello World...'
+          sh "echo 'Hello World' > test.txt"
+          withCredentials([string(credentialsId: 'sa-token', variable: 'SECRET')]) {
+          echo "My secret text is '${SECRET}'"
+          sh '''
+          oc login --token=${SECRET}  --server=https://api.cluster-65wbs.65wbs.sandbox2884.opentlc.com:6443 --insecure-skip-tls-verify=true
+          oc whoami
+          '''
+          }
+          }
       }
     }
   }
