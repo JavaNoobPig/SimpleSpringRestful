@@ -1,0 +1,62 @@
+pipeline {
+  agent {
+    kubernetes {
+      yaml '''
+        apiVersion: v1
+        kind: Pod
+        spec:
+          containers:
+          - name: maven
+            image: registry.redhat.io/openshift4/ose-jenkins-agent-maven:v4.10.0-202206270836.p0.gc5b7159.assembly.stream
+            command:
+            - cat
+            tty: true
+          imagePullSecrets:
+          - name: registry-redhat-io-secret
+        '''
+    }
+  }
+  stages {
+    stage('local check') {
+      agent { label 'local' }
+      steps {
+          script {
+          sh 'ls -l'
+          }
+      }
+    }
+    stage('Run maven') {
+      steps {
+        container('maven') {
+          sh 'ls -l'
+          sh 'mvn -version'
+          sh 'which oc'
+          withCredentials([string(credentialsId: 'sa-token', variable: 'SECRET')]) {
+          echo "My secret text is '${SECRET}'"
+          sh '''
+          oc login --token=${SECRET}  --server=https://api.cluster-2fdx7.2fdx7.sandbox719.opentlc.com:6443 --insecure-skip-tls-verify=true
+          oc whoami
+          '''
+          }          
+
+        }
+      }
+    }
+    stage('Run oc') {
+      agent { label 'local' }
+      steps {
+          script {
+          echo 'Hello World...'
+          sh "echo 'Hello World' > test.txt"
+          withCredentials([string(credentialsId: 'sa-token', variable: 'SECRET')]) {
+          echo "My secret text is '${SECRET}'"
+          sh '''
+          oc login --token=${SECRET}  --server=https://api.cluster-2fdx7.2fdx7.sandbox719.opentlc.com:6443 --insecure-skip-tls-verify=true
+          oc whoami
+          '''
+          }
+          }
+      }
+    }
+  }
+}
