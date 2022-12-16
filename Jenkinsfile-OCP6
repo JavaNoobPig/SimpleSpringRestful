@@ -1,0 +1,93 @@
+pipeline {
+  agent {
+    kubernetes {
+      yaml '''
+        apiVersion: v1
+        kind: Pod
+        spec:
+          containers:
+          - name: maven
+            image: registry.redhat.io/openshift4/ose-jenkins-agent-maven:v4.10.0-202206270836.p0.gc5b7159.assembly.stream
+            command:
+            - cat
+            tty: true
+          imagePullSecrets:
+          - name: registry-redhat-io-secret
+        '''
+    }
+  }
+  stages {
+    stage('local check') {
+      agent { label 'local' }
+      steps {
+          script {
+          sh 'ls -l'
+          }
+      }
+    }
+    stage('local Checkmarx') {
+      agent { label 'local' }
+      steps {
+            step([$class: 'CxScanBuilder',
+                    comment: '',
+                    credentialsId: '',
+                    excludeFolders: '.helmignore, build, templates, javadocs, javadoc, 
+                                   dist, node_modules, WMSRegistryReader.java, 
+                                   BlowfishEncryptionStrategy.java, BlowfishUtils.java',
+                    excludeOpenSourceFolders: '',
+                    exclusionsSetting: '',
+                    failBuildOnNewResults: false,
+                    failBuildOnNewSeverity: 'MEDIUM',
+                    filterPattern: '''!**/_cvs/**/*, !Checkmarx/Reports/*.*''',
+                    fullScanCycle: 10,
+                    groupId: '0de2e46c-8410-478a-85b9-b5dce83f8ecb',
+                    includeOpenSourceFolders: '',
+                    osaArchiveIncludePatterns: '*.zip, *.war, *.ear, *.tgz',
+                    osaInstallBeforeScan: false,
+                    password: '{}',
+                    preset: '36',
+                    projectName: "${APP_NAME}",
+                    sastEnabled: true,
+                    serverUrl: 'https://checkmarx.abc.com',
+                    sourceEncoding: '1',
+                    username: '',
+                    vulnerabilityThresholdResult: 'FAILURE',
+                    waitForResultsEnabled: true])
+      }
+    }
+    stage('Run maven') {
+      steps {
+        container('maven') {
+          sh 'ls -l'
+          sh 'mvn -version'
+          sh 'which oc'
+          withCredentials([string(credentialsId: 'sa-token', variable: 'SECRET')]) {
+          echo "My secret text is '${SECRET}'"
+          sh '''
+          oc login --token=${SECRET}  --server=https://api.cluster-2fdx7.2fdx7.sandbox719.opentlc.com:6443 --insecure-skip-tls-verify=true
+          oc whoami
+          '''
+          }          
+
+        }
+      }
+    }
+    stage('Run oc') {
+      agent { label 'local' }
+      steps {
+          script {
+          echo 'Hello World...'
+          sh "echo 'Hello World' > test.txt"
+          withCredentials([string(credentialsId: 'sa-token', variable: 'SECRET')]) {
+          echo "My secret text is '${SECRET}'"
+          sh '''
+          oc login --token=${SECRET}  --server=https://api.cluster-2fdx7.2fdx7.sandbox719.opentlc.com:6443 --insecure-skip-tls-verify=true
+          oc whoami
+          oc apply -f deployment.yaml
+          '''
+          }
+          }
+      }
+    }
+  }
+}
