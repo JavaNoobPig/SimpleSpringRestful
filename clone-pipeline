@@ -13,5 +13,17 @@ pipeline {
           sh "ls -lat"
       }
     }
+    stage('Clone another') {
+      steps {
+          checkout([$class: 'GitSCM', 
+                    branches: [[name: '840d49961cbf9d2b450dcf0e7fa88e70cf9f92fb']], 
+                    extensions: [], 
+                    userRemoteConfigs: [[
+                      credentialsId: 'github', 
+                      url: 'https://github.com/JavaNoobPig/SimpleSpringRestful.git']]])
+
+          sh "ls -lat"
+      }
+    }
   }
 }
