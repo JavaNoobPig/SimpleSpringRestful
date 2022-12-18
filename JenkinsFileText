@@ -1,0 +1,35 @@
+pipeline {
+  agent any
+  stages {
+    stage('build Jar') {
+      steps {
+        script {
+          echo 'building Jar...'
+          buildJar()
+        }
+      }
+    }
+    stage('build Image') {
+      steps {
+        script {
+          echo 'building docker image...'
+          buildImage(env.IMAGE_NAME)
+          dockerLogin()
+          dockerPush(env.IMAGE_NAME)
+        }
+      }
+    }
+    stage('deploy') {
+      steps {
+        script {
+          echo 'EC2 Server have already done docker login, so do not need to login again!'
+          def dockerCmd = "docker run -d -p 8083:8080 ${IMAGE_NAME}"
+          sshagent(['ec2-server-key']) {
+               sh "ssh -o StrictHostKeyChecking=no ec2-user@18.181.189.188 ${dockerCmd}"
+          }
+          echo 'deploying application...'
+        }
+      }
+    }
+  }
+}
